@@ -1,0 +1,33 @@
+
+services:
+
+  wordpress:
+    image: wordpress
+    restart: no
+    ports:
+      - 8080:80
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_USER: exampleuser
+      WORDPRESS_DB_PASSWORD: examplepass
+      WORDPRESS_DB_NAME: exampledb
+      WORDPRESS_DEBUG: 1
+    volumes:
+      - wordpress:/var/www/html
+      - "./wp-plugins/cf7-workshop-scheduler:/var/www/html/wp-content/plugins/cf7-workshop-scheduler"
+      #- "./wp-config.php:/var/www/html/wp-config.php:ro"
+
+  db:
+    image: mysql:8.0
+    restart: no
+    environment:
+      MYSQL_DATABASE: exampledb
+      MYSQL_USER: exampleuser
+      MYSQL_PASSWORD: examplepass
+      MYSQL_RANDOM_ROOT_PASSWORD: '1'
+    volumes:
+      - db:/var/lib/mysql
+
+volumes:
+  wordpress:
+  db:

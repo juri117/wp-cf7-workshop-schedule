@@ -1,0 +1,16 @@
+tests
+tmp
+**/*trash
+www/wp-content/plugins/contact-form-7
+www/wp-content/plugins/advanced-cf7-db
+www/wp-content/plugins/query-monitor
+**/*.zip
+release
+
+wp-config.php
+wp-plugins/index.php
+wp-plugins/akismet/*
+wp-plugins/hello.php
+wp-plugins/updraftplus/*
+wp-plugins/wp-config.php
+wp-plugins/wp-db-backup

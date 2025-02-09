@@ -1,0 +1,95 @@
+.wrapper {
+    width: 100%;
+}
+
+#calendar {
+    width: 49%;
+    min-height: 200px;
+    display: inline-block;
+    vertical-align: top;
+}
+
+#note {
+    width: 49%;
+    display: inline-block;
+    vertical-align: top;
+    padding-left: 1%;
+}
+
+@media screen and (max-width: 400px) {
+    #calendar {
+        width: 98%;
+    }
+
+    #note {
+        width: 98%;
+        padding-left: 0px;
+        padding-top: 10px;
+    }
+}
+
+.cls-confirmed {
+    background-color: rgb(40, 173, 40) !important;
+    color: white;
+}
+
+.cls-option {
+    background-color: rgb(0, 81, 255) !important;
+    color: white;
+}
+
+.cls-disabled {
+    background-color: rgb(121, 121, 121) !important;
+    color: white;
+}
+
+.cls-undefined {
+    background-color: rgb(0, 81, 255) !important;
+    color: white;
+}
+
+.cls-note-cal {
+    color: #ffffff;
+    font-size: 1.0em;
+    background: rgba(0, 153, 153, .4);
+    border-radius: 3px;
+    padding: 1px 2px;
+    text-align: center;
+    margin: initial;
+    cursor: pointer;
+    box-sizing: border-box;
+}
+
+.info-box {
+    border: 0pt solid rgb(202, 202, 202);
+    /*border-radius: 5px;*/
+}
+
+.table-info {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.tr-new-sub-sub-section {
+    border-top: 1pt dotted rgb(202, 202, 202);
+    vertical-align: top;
+}
+
+.tr-new-sub-section {
+    border-top: 1pt solid rgb(202, 202, 202);
+    vertical-align: top;
+}
+
+.tr-new-section {
+    border-top: 2pt solid rgb(202, 202, 202);
+    background-color: rgb(202, 202, 202);
+    vertical-align: top;
+}
+
+.tr-new-section>td>strong {
+    margin-left: 5%;
+}
+
+.cls-input {
+    margin: 2px !important;
+}

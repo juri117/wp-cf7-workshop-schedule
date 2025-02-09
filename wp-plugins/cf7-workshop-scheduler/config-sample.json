@@ -1,0 +1,68 @@
+{
+    "sample": {
+        "title": "Sample Project",
+        "form_id": 1234,
+        "calendar_cap": "read",
+        "list_cap": "administrator",
+        "secret_fields": [
+            "tel",
+            "email",
+            "confirmation_privacy",
+            "submit_ip"
+        ],
+        "controlls": {
+            "team_checkin": {
+                "max_members": 10,
+                "check_field": {
+                    "text": "payed"
+                },
+                "admin_can_remove": false
+            },
+            "check_fields": {
+                "_check_client": {
+                    "text": "client confirmed",
+                    "disable_if_cancled": true
+                },
+                "_check_team": {
+                    "text": "team confirmed",
+                    "disable_if_cancled": true
+                }
+            },
+            "invoice": {},
+            "public_note": {},
+            "private_note": {}
+        },
+        "field_name_patches": {
+            "Contact": [
+                "_first_name",
+                " ",
+                "_last_name"
+            ],
+            "Address": [
+                "_address",
+                " ",
+                "_address_extra",
+                "<br>",
+                "_address_zip",
+                " ",
+                "_address_city"
+            ]
+        },
+        "admin_field_name_patches": {
+            "E-Mail": [
+                "_email"
+            ],
+            "Tel.": [
+                "_tel"
+            ],
+            "privacy confirmation": [
+                "confirmation_privacy"
+            ]
+        },
+        "admin_list_columns": {
+            "Name": "_last_name",
+            "Datum": "_date",
+            "Teamer_innen": "_team"
+        }
+    }
+}
