@@ -11,7 +11,7 @@ echo $VERSION
 
 mkdir -p release
 
-cp -r www/wp-content/plugins/cf7-workshop-scheduler release/cf7-workshop-scheduler
+cp -r wp-plugins/cf7-workshop-scheduler release/cf7-workshop-scheduler
 cd release
 zip -r cf7-workshop-scheduler-$VERSION.zip cf7-workshop-scheduler
 
