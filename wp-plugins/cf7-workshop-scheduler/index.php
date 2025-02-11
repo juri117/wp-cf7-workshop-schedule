@@ -20,6 +20,7 @@ require_once(dirname(__FILE__) . '/config.php');
 require_once(dirname(__FILE__) . '/admin_list_page.php');
 require_once(dirname(__FILE__) . '/admin_calendar_page.php');
 require_once(dirname(__FILE__) . '/admin_config_page.php');
+require_once(dirname(__FILE__) . '/cf7.php');
 
 
 

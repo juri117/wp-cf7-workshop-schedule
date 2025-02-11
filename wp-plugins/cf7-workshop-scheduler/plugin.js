@@ -27,15 +27,6 @@ function isRejected(data, date_id) {
 
 function getEventDataHtml(event_id, date_id) {
 
-    var custom_fields = ["name_einrichtung", "vorname", "nachname", "adresse",
-        "adresse_extra", "adresse_plz", "adresse_bezirk", "klassenstufe", "anzahl",
-        "dauer", "pause", "abholort", "anlass", "schwerpunkt", "besonderes", "corona_regeln", "anmerkung_frage",
-        "date1", "time1",
-        "date2", "time2",
-        "date3", "time3",
-        "date4", "time4",
-        "submit_ip"]
-
     var data = events[event_id];
 
     var header_cls = "cls-option";

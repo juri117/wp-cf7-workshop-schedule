@@ -3,6 +3,7 @@
 
 **new-features**
 * switch to git repo
+* use type time for time input fields
 
 # 0.10
 
