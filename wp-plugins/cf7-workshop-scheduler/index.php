@@ -143,7 +143,7 @@ function my_plugin_admin_scripts()
 	wp_enqueue_style('my-calendar', plugins_url('cf7-workshop-scheduler/calendar/calendar.css'), array(), VERSION);
 	wp_enqueue_style('my-calendar-colors', plugins_url('cf7-workshop-scheduler/calendar/calendar_colors.css'), array(), VERSION);
 	wp_enqueue_script('my-calendar', plugins_url('cf7-workshop-scheduler/calendar/calendar.js'), array(), VERSION);
-	wp_enqueue_script('my-workshop-skripts', plugins_url('cf7-workshop-scheduler/plugin.js'), array(), VERSION);
+	//wp_enqueue_script('my-workshop-skripts', plugins_url('cf7-workshop-scheduler/plugin.js'), array(), VERSION);
 }
 
 function my_plugin_admin_styles()

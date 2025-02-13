@@ -145,9 +145,17 @@
       this.month = date.getMonth();
       this.year = date.getFullYear();
       await this.drawCalendar();
-      this.onMonthChanged.call(this, this.month + 1, this.year);
+      //this.onMonthChanged.call(this, this.month + 1, this.year);
       this.clearSelection();
       this.selectDate(new Date(this.year, this.month, date.getDate()));
+      return this;
+    }
+
+    async loadMonth(year, month) {
+      this.month = month;
+      this.year = year;
+      await this.drawCalendar();
+      //this.onMonthChanged.call(this, this.month + 1, this.year);
       return this;
     }
 
@@ -158,8 +166,8 @@
     async loadNextMonth() {
       this.month = this.month - 1 > -1 ? this.month - 1 : 11;
       if (this.month === 11) this.year--;
-      await this.drawCalendar();
       this.onMonthChanged.call(this, this.month + 1, this.year);
+      //await this.drawCalendar();
       return this;
     }
 
@@ -170,8 +178,8 @@
     async loadPreviousMonth() {
       this.month = this.month + 1 > 11 ? 0 : this.month + 1;
       if (this.month === 0) this.year++;
-      await this.drawCalendar();
       this.onMonthChanged.call(this, this.month + 1, this.year);
+      //await this.drawCalendar();
       return this;
     }
 
