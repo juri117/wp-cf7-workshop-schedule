@@ -2,7 +2,7 @@
     width: 100%;
 }
 
-#calendar {
+#calendar-container {
     width: 49%;
     min-height: 200px;
     display: inline-block;
@@ -18,7 +18,7 @@
 
 
 @media screen and (max-width: 400px) {
-    #calendar {
+    #calendar-container {
         width: 98%;
     }
 

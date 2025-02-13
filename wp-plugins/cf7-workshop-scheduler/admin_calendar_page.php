@@ -297,7 +297,30 @@ function my_admin_page($form_key)
 
 
     <div class="wrapper">
-        <div id="calendar"></div>
+
+        <div id="calendar-container">
+            <?php
+            echo "<div class='cjs-weekRow cjs-calHeader' style='width:100%; display:flex; justify-content:space-between; align-items:center; padding:10px;'>";
+            echo "<a class='button' href='?page={$page_slug}&year=" . ($year - 1) . "&month=" . $month . "'>&#8249;</a>";
+            echo "<strong>{$year}</strong>";
+            echo "<a class='button' href='?page={$page_slug}&year=" . ($year + 1) . "&month=" . $month . "'>&#8250;</a>";
+            echo "</div>";
+            echo "<div class='cjs-weekRow cjs-calHeader' style='width:100%; display:flex; justify-content:space-between; align-items:center; padding:10px; overflow-x:auto;'>";
+            global $wp_locale;
+            for ($i = 1; $i <= 12; $i++) {
+                $month_name = substr($wp_locale->get_month($i), 0, 3);
+                if ($i == $month) {
+                    echo "<a class='button-primary' style='margin-right: 6px;' href='?page={$page_slug}&year=" . $year . "&month=" . $i . "'><strong>" . $month_name . ".</strong></a>";
+                } else {
+                    echo "<a class='button' style='margin-right: 6px;' href='?page={$page_slug}&year=" . $year . "&month=" . $i . "'>" . $month_name . ".</a>";
+                }
+            }
+            //echo "<a class='button' href='?page={$page_slug}&year=" . $year  . "&month=" . ($month - 1) . "'>&#8249;</a>";
+            echo "</div><hr>";
+            ?>
+            <div id="calendar"></div>
+        </div>
+
         <!-- <div id="note">sollte hier beim Klicken im Kalender nichts erscheinen bitte einmal strg+shift+R drücken (das lädt all Skripte neu).</div> -->
         <div id="note">
             <?php
