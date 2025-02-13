@@ -15,7 +15,7 @@ function updateEvent($events, $event_id, $date_id, $calendar_list, $config_form,
 
 function isConfirmed($data, $date_id)
 {
-    $key = "_date_confirm_" . $date_id;
+    $key = "_date_confirm_{$date_id}";
     if (property_exists($data, $key)) {
         return $data->$key == "1";
     }
@@ -24,7 +24,7 @@ function isConfirmed($data, $date_id)
 
 function isRejected($data, $date_id)
 {
-    $key = "_date_confirm_" . $date_id;
+    $key = "_date_confirm_{$date_id}";
     if (property_exists($data, $key)) {
         return $data->$key == "0";
     }
@@ -49,9 +49,9 @@ function getEventDataHtml($events, $event_id, $date_id, $calendar_list, $config_
     $out = "<div class=\"info-box\">";
     $out .= "<table class=\"table-info\">";
 
-    $date_key = 'date' . $date_id;
-    $time_key = 'time' . $date_id;
-    $out .= "<tr class=\"" . $header_cls . "\"><th><strong>" . get_date_str($data->$date_key) . "</strong> um <strong>" . $data->$time_key . "</strong></th><th>" . $data->name_einrichtung . "</th></tr>";
+    $date_key = "date{$date_id}";
+    $time_key = "time{$date_id}";
+    $out .= "<tr class=\"{$header_cls}\"><th><strong>" . get_date_str($data->$date_key) . "</strong> um <strong>{$data->$time_key}</strong></th><th>{$data->name_einrichtung}</th></tr>";
 
     //echo var_dump($config_form);
     $out .= display_fields($data, $config_form["field_name_patches"]);
@@ -63,7 +63,7 @@ function getEventDataHtml($events, $event_id, $date_id, $calendar_list, $config_
 
         $user = wp_get_current_user();
         for ($i = 1; $i <= 10; $i++) {
-            $key = "_team" . $i . "_" . $date_id;
+            $key = "_team{$i}_{$date_id}";
             if (property_exists($data, $key)) {
                 if ($data->$key == $user->user_login) {
                     $i_am_team = true;
@@ -71,7 +71,7 @@ function getEventDataHtml($events, $event_id, $date_id, $calendar_list, $config_
             }
         }
 
-        $confirm_key = "_date_confirm_" . $date_id;
+        $confirm_key = "_date_confirm_{$date_id}";
         if ($i_am_team) {
             $out .= add_form_button($event_id, $date_id, "un_add_me", "mich austragen", !property_exists($data, $confirm_key));
         } else {
@@ -81,23 +81,23 @@ function getEventDataHtml($events, $event_id, $date_id, $calendar_list, $config_
         $out .= "</td></tr>";
 
         for ($i = 1; $i <= 10; $i++) {
-            $key = "_team" . $i . "_" . $date_id;
+            $key = "_team{$i}_{$date_id}";
             if (property_exists($data, $key) && $data->$key != "") {
-                $out .= "<tr><td>" . $i . ".</dt><td><div>";
-                $out .= "<strong>" . $data->$key . "</strong>";
+                $out .= "<tr><td>{$i}.</dt><td><div>";
+                $out .= "<strong>{$data->$key}</strong>";
 
                 if (isset($config_form["controlls"]["team_checkin"]["check_field"]) && has_admin_priv() && isConfirmed($data, $date_id)) {
-                    $check_key = "_check_team" . $i . "_" . $date_id;
+                    $check_key = "_check_team{$i}_{$date_id}";
                     if (!property_exists($data, $check_key)) {
-                        $out .= " " . add_form_button($event_id, $date_id, "_check_team" . $i, "AWE bezahlt", true);
+                        $out .= " " . add_form_button($event_id, $date_id, "_check_team{$i}", "AWE bezahlt", true);
                     } else {
                         $out .= " - <span style=\"color:green;\">AWE bezahlt am " . get_date_str($data->$check_key) . "</span> ";
-                        $out .= add_form_button($event_id, $date_id, "un_check_team" . $i, "rückgängig", true);
+                        $out .= add_form_button($event_id, $date_id, "un_check_team{$i}", "rückgängig", true);
                     }
                 }
 
                 if ($config_form["controlls"]["team_checkin"]["admin_can_remove"] && has_admin_priv()) {
-                    $out .= " " . add_form_button($event_id, $date_id, "un_add_" . $i, "austragen", true);
+                    $out .= " " . add_form_button($event_id, $date_id, "un_add_{$i}", "austragen", true);
                 }
 
                 $out .= "</div></td></tr>";
@@ -106,7 +106,7 @@ function getEventDataHtml($events, $event_id, $date_id, $calendar_list, $config_
     }
 
     $out .= "<tr class=\"tr-new-sub-section\"><td>Team-Notizen</dt><td>";
-    $team_note_key = "_team_note_" . $date_id;
+    $team_note_key = "_team_note_{$date_id}";
     $team_note_txt = "";
     if (property_exists($data, $team_note_key)) {
         $team_note_txt = $data->$team_note_key;
@@ -115,7 +115,7 @@ function getEventDataHtml($events, $event_id, $date_id, $calendar_list, $config_
     if ($i_am_team || has_admin_priv()) {
         $out .= add_text_area($event_id, $date_id, "team_note", $team_note_txt);
     } else {
-        $out .= "<span style=\"white-space: pre-line\">" . $team_note_txt . "</span>";
+        $out .= "<span style=\"white-space: pre-line\">{$team_note_txt}</span>";
     }
     $out .= "</td></tr>";
 
@@ -124,7 +124,7 @@ function getEventDataHtml($events, $event_id, $date_id, $calendar_list, $config_
         $out .= "<tr class=\"tr-new-section\"><td colspan=\"2\"><strong>Administration</strong></dt></tr>";
         $out .= "<tr class=\"tr-new-sub-sub-section\"><td>Termin auswählen</dt><td>";
 
-        $confirm_key = "_date_confirm_" . $date_id;
+        $confirm_key = "_date_confirm_{$date_id}";
         if (!property_exists($data, $confirm_key)) {
             $out .= add_form_button($event_id, $date_id, "confirm_date", "bestätigen", true);
             $out .= add_form_button($event_id, $date_id, "reject_date", "ablehnen", true);
@@ -143,11 +143,11 @@ function getEventDataHtml($events, $event_id, $date_id, $calendar_list, $config_
         if (isset($config_form["controlls"]["check_fields"])) {
             $out .= "<tr class=\"tr-new-sub-sub-section\"><td><strong>Checkliste</strong></dt><td></td></tr>";
             foreach ($config_form["controlls"]["check_fields"] as $key => $field) {
-                $out .= "<tr><td>" . $field["text"] . "</dt><td>";
-                $check_key = $key . "_" . $date_id;
+                $out .= "<tr><td>{$field["text"]}</dt><td>";
+                $check_key = "{$key}_{$date_id}";
                 if (property_exists($data, $check_key)) {
                     $out .= "<span style=\"color:green;\">am " . get_date_str($data->$check_key) . " </span>";
-                    $out .= add_form_button($event_id, $date_id, "un" . $key, "un-check", (!isRejected($data, $date_id) || !$field["disable_if_cancled"]));
+                    $out .= add_form_button($event_id, $date_id, "un{$key}", "un-check", (!isRejected($data, $date_id) || !$field["disable_if_cancled"]));
                 } else {
                     $out .= add_form_button($event_id, $date_id, $key, "check", (!isRejected($data, $date_id) || !$field["disable_if_cancled"]));
                 }
@@ -163,7 +163,7 @@ function getEventDataHtml($events, $event_id, $date_id, $calendar_list, $config_
             $price_sel_custom = "";
             $price_custom_txt = "";
 
-            $price_key = "_price_" . $date_id;
+            $price_key = "_price_{$date_id}";
             if (property_exists($data, $price_key)) {
                 switch ($data->$price_key) {
                     case "0":
@@ -183,27 +183,27 @@ function getEventDataHtml($events, $event_id, $date_id, $calendar_list, $config_
 
             $out .= "<tr class=\"tr-new-sub-sub-section\"><td>Kosten</dt><td>";
             $out .= "<form action=\"\" method=\"POST\">";
-            $out .= "<input hidden type=\"text\" id=\"event_id\" name=\"event_id\" value=\"" . $event_id . "\">";
-            $out .= "<input hidden type=\"text\" id=\"date_id\" name=\"date_id\" value=\"" . $date_id . "\">";
-            $out .= "<input type=\"radio\" id=\"free\" name=\"price\" value=\"0\"" . $price_sel_0 . "><label for=\"free\">kostenlos</label></br>";
-            $out .= "<input type=\"radio\" id=\"75eu\" name=\"price\" value=\"75\"" . $price_sel_75 . "><label for=\"75eu\">75 €</label></br>";
-            $out .= "<input type=\"radio\" id=\"150eu\" name=\"price\" value=\"150\"" . $price_sel_150 . "><label for=\"150eu\">150 €</label></br>";
-            $out .= "<input type=\"radio\" id=\"custom\" name=\"price\" value=\"custom\"" . $price_sel_custom . ">";
-            $out .= "<input type=\"text\" id=\"price_txt\" name=\"price_txt\" value=\"" . $price_custom_txt . "\" style=\"width:80px;\"> €</br>";
+            $out .= "<input hidden type=\"text\" id=\"event_id\" name=\"event_id\" value=\"{$event_id}\">";
+            $out .= "<input hidden type=\"text\" id=\"date_id\" name=\"date_id\" value=\"{$date_id}\">";
+            $out .= "<input type=\"radio\" id=\"free\" name=\"price\" value=\"0\"{$price_sel_0}><label for=\"free\">kostenlos</label></br>";
+            $out .= "<input type=\"radio\" id=\"75eu\" name=\"price\" value=\"75\"{$price_sel_75}><label for=\"75eu\">75 €</label></br>";
+            $out .= "<input type=\"radio\" id=\"150eu\" name=\"price\" value=\"150\"{$price_sel_150}><label for=\"150eu\">150 €</label></br>";
+            $out .= "<input type=\"radio\" id=\"custom\" name=\"price\" value=\"custom\"{$price_sel_custom}>";
+            $out .= "<input type=\"text\" id=\"price_txt\" name=\"price_txt\" value=\"{$price_custom_txt}\" style=\"width:80px;\"> €</br>";
 
             $dis = "";
             if (!isConfirmed($data, $date_id)) {
                 $dis = " disabled";
             }
 
-            $out .= "<input type=\"submit\" name=\"invoice\" value=\"speichern\"" . $dis . " class=\"cls-input button\">";
+            $out .= "<input type=\"submit\" name=\"invoice\" value=\"speichern\"{$dis} class=\"cls-input button\">";
             $out .= "</form>";
             $out .= "</td></tr>";
         }
 
         if (isset($config_form["controlls"]["public_note"])) {
             $out .= "<tr class=\"tr-new-sub-section\"><td>Info für ALLE</dt><td>";
-            $pub_note_key = "_public_note_" . $date_id;
+            $pub_note_key = "_public_note_{$date_id}";
             $pub_note_txt = "";
             if (property_exists($data, $pub_note_key)) {
                 $pub_note_txt = $data->$pub_note_key;
@@ -214,7 +214,7 @@ function getEventDataHtml($events, $event_id, $date_id, $calendar_list, $config_
 
         if (isset($config_form["controlls"]["private_note"])) {
             $out .= "<tr class=\"tr-new-sub-section\"><td>Admin-Notizen</dt><td>";
-            $priv_note_key = "_private_note_" . $date_id;
+            $priv_note_key = "_private_note_{$date_id}";
             $priv_note_txt = "";
             if (property_exists($data, $priv_note_key)) {
                 $priv_note_txt = $data->$priv_note_key;
@@ -224,9 +224,9 @@ function getEventDataHtml($events, $event_id, $date_id, $calendar_list, $config_
         }
     } else {
         if (isset($config_form["controlls"]["public_note"])) {
-            $pub_note_key = "_public_note_" . $date_id;
+            $pub_note_key = "_public_note_{$date_id}";
             if (property_exists($data, $pub_note_key)) {
-                $out .= "<tr class=\"tr-new-sub-section\"><td>Info für ALLE</dt><td><span style=\"white-space: pre-line\">" . $data->$pub_note_key . "</span></td></tr>";
+                $out .= "<tr class=\"tr-new-sub-section\"><td>Info für ALLE</dt><td><span style=\"white-space: pre-line\">{$data->$pub_note_key}</span></td></tr>";
             }
         }
     }
@@ -247,10 +247,10 @@ function getEventDataHtml($events, $event_id, $date_id, $calendar_list, $config_
             if ($event["dateId"] == $date_id) {
                 $current = "ausgewählt ↑";
             }
-            $time_key = "time" . $event["dateId"];
-            $out .= "<tr style=\"cursor: pointer;\" class=\"table-info " . $event["type"] . "\" onclick=\"window.location='?page=" . $page_slug . "&event_id=" . $event["id"] . "&date_id=" . $event["dateId"] . "';\">";
+            $time_key = "time{$event["dateId"]}";
+            $out .= "<tr style=\"cursor: pointer;\" class=\"table-info {$event["type"]}\" onclick=\"window.location='?page={$page_slug}&event_id={$event["id"]}&date_id={$event["dateId"]}';\">";
             //updateEvent(" . $event["id"] . ", " . $event["dateId"] . ");cal.loadDate(new Date('" . $event["startDate"] . "'));window.scrollTo(0,0)\">";
-            $out .= "<th>" . $counter . "</th><th>" . $current . "</th><th><strong>" . get_date_str($event["startDate"]) . "</strong> um <strong>" . $events[$event["id"]]->$time_key . "</strong></th><th>" . $event["desc"] . "</th>";
+            $out .= "<th>{$counter}</th><th>{$current}</th><th><strong>" . get_date_str($event["startDate"]) . "</strong> um <strong>{$events[$event["id"]]->$time_key}</strong></th><th>{$event["desc"]}</th>";
             $out .= "</tr>";
             $counter++;
         }
@@ -272,7 +272,7 @@ function display_fields($data, $field_definitions)
             $class_name = "tr-new-sub-section";
             $display_key = substr($display_key, 1);
         }
-        $out .= "<tr class=\"" . $class_name . "\"><td>" . $display_key . "</dt><td><span style=\"white-space: pre-line\">";
+        $out .= "<tr class=\"{$class_name}\"><td>{$display_key}</dt><td><span style=\"white-space: pre-line\">";
         foreach ($parts as $part) {
             if (strpos($part, "_") === 0) {
                 $field_key = substr($part, 1);
@@ -295,9 +295,9 @@ function add_form_button($event_id, $date_id, $action_name, $button_text, $enabl
 {
     $dis = $enabled ? "" : " disabled";
     $out = "<form action=\"\" method=\"POST\" style=\"display: inline;\">";
-    $out .= "<input hidden type=\"text\" id=\"event_id\" name=\"event_id\" value=\"" . $event_id . "\">";
-    $out .= "<input hidden type=\"text\" id=\"date_id\" name=\"date_id\" value=\"" . $date_id . "\">";
-    $out .= "<input type=\"submit\" name=\"" . $action_name . "\" value=\"" . $button_text . "\"" . $dis . " class=\"cls-input button\">";
+    $out .= "<input hidden type=\"text\" id=\"event_id\" name=\"event_id\" value=\"{$event_id}\">";
+    $out .= "<input hidden type=\"text\" id=\"date_id\" name=\"date_id\" value=\"{$date_id}\">";
+    $out .= "<input type=\"submit\" name=\"{$action_name}\" value=\"{$button_text}\"{$dis} class=\"cls-input button\">";
     $out .= "</form>";
     return $out;
 }
@@ -305,12 +305,12 @@ function add_form_button($event_id, $date_id, $action_name, $button_text, $enabl
 function add_text_area($event_id, $date_id, $action_name, $text)
 {
     $out = "<form action=\"\" method=\"POST\">";
-    $out .= "<input hidden type=\"text\" id=\"event_id\" name=\"event_id\" value=\"" . $event_id . "\">";
-    $out .= "<input hidden type=\"text\" id=\"date_id\" name=\"date_id\" value=\"" . $date_id . "\">";
+    $out .= "<input hidden type=\"text\" id=\"event_id\" name=\"event_id\" value=\"{$event_id}\">";
+    $out .= "<input hidden type=\"text\" id=\"date_id\" name=\"date_id\" value=\"{$date_id}\">";
     $out .= "<textarea id=\"note\" name=\"note\" rows=\"4\" style=\"width:100%;\" class=\"cls-input\">";
     $out .= $text;
     $out .= "</textarea></br>";
-    $out .= "<input type=\"submit\" name=\"" . $action_name . "\" value=\"speichern\" class=\"cls-input button\">";
+    $out .= "<input type=\"submit\" name=\"{$action_name}\" value=\"speichern\" class=\"cls-input button\">";
     $out .= "</form>";
     return $out;
 }
@@ -318,10 +318,10 @@ function add_text_area($event_id, $date_id, $action_name, $text)
 function add_selection($event_id, $date_id, $action_name, $options, $selected, $txt)
 {
     $out = "<form action=\"\" method=\"POST\">";
-    $out .= "<input hidden type=\"text\" id=\"event_id\" name=\"event_id\" value=\"" . $event_id . "\">";
-    $out .= "<input hidden type=\"text\" id=\"date_id\" name=\"date_id\" value=\"" . $date_id . "\">";
+    $out .= "<input hidden type=\"text\" id=\"event_id\" name=\"event_id\" value=\"{$event_id}\">";
+    $out .= "<input hidden type=\"text\" id=\"date_id\" name=\"date_id\" value=\"{$date_id}\">";
     $out .= "<input type=\"radio\" id=\"huey\" name=\"drone\" value=\"huey\">";
-    $out .= "<input type=\"submit\" name=\"" . $action_name . "\" value=\"speichern\" class=\"cls-input button\">";
+    $out .= "<input type=\"submit\" name=\"{$action_name}\" value=\"speichern\" class=\"cls-input button\">";
     $out .= "</form>";
     return $out;
 }
@@ -334,9 +334,9 @@ function updateDay($events, $calendar_list, $date, $page_slug)
     $out = "";
     foreach ($calendar_list as $event) {
         if (datesAreOnSameDay(new DateTime($date), new DateTime($event["startDate"]))) {
-            $time_key = "time" . $event["dateId"];
-            $out .= "<table style=\"cursor: pointer;\" class=\"table-info\" onclick=\"window.location='?page=" . $page_slug . "&event_id=" . $event["id"] . "&date_id=" . $event["dateId"] . "';\">";
-            $out .= "<tr class=\"" . $event["type"] . "\"><th><strong>" . get_date_str($date) . "</strong> um <strong>" . $events[$event["id"]]->$time_key . "</strong></th><th>" . $event["desc"] . "</th></tr>";
+            $time_key = "time{$event["dateId"]}";
+            $out .= "<table style=\"cursor: pointer;\" class=\"table-info\" onclick=\"window.location='?page={$page_slug}&event_id={$event["id"]}&date_id={$event["dateId"]}';\">";
+            $out .= "<tr class=\"{$event["type"]}\"><th><strong>" . get_date_str($date) . "</strong> um <strong>{$events[$event["id"]]->$time_key}</strong></th><th>{$event["desc"]}</th></tr>";
             $out .= "</table>";
         }
     }

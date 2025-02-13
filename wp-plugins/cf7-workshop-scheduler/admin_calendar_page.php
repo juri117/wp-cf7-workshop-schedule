@@ -115,6 +115,16 @@ function my_admin_page($form_key)
     if (isset($_GET["month"])) {
         $month = str_pad($_GET["month"], 2, '0', STR_PAD_LEFT);
     }
+    if (isset($_GET["event_id"]) && isset($_GET["date_id"])) {
+        $sql_event_date = "SELECT value FROM {$wpdb->prefix}cf7_vdata_entry WHERE name = 'date{$_GET["date_id"]}' AND data_id = {$_GET["event_id"]};";
+        //echo $sql_event_date;
+        $events = $wpdb->get_results($sql_event_date);
+        if (!empty($events) && isset($events[0]->value)) {
+            $event_date = $events[0]->value;
+            $year = date('Y', strtotime($event_date));
+            $month = date('m', strtotime($event_date));
+        }
+    }
 
     $config_form = get_config()[$form_key];
     $form_title = get_config()[$form_key]["title"];
@@ -213,6 +223,7 @@ function my_admin_page($form_key)
     }
 
 
+
     $sql_event_ids = "SELECT DISTINCT data_id FROM {$wpdb->prefix}cf7_vdata_entry WHERE name LIKE 'date_' AND value LIKE '{$year}-{$month}-__';";
     $event_ids = $wpdb->get_results($sql_event_ids);
     $event_ids = array_map(function ($event) {
@@ -226,6 +237,7 @@ function my_admin_page($form_key)
 
     if (sizeof($event_ids) > 0) {
         $sql_events = "SELECT data_id, JSON_OBJECTAGG(name, value) AS data FROM {$wpdb->prefix}cf7_vdata_entry WHERE cf7_id = {$form_id} AND data_id IN (" . implode(',', $event_ids) . ") GROUP BY data_id;";
+        //echo $sql_events;
         $events = $wpdb->get_results($sql_events);
         foreach ($events as $event) {
             $json = json_decode($event->data);
