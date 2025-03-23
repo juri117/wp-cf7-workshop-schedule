@@ -196,9 +196,10 @@ function my_admin_page($form_key)
             db_update_field($_POST["event_id"], "_price_{$_POST["date_id"]}", $price);
         }
     }
-    if (isset($_POST["team_note"])) {
-        db_update_field($_POST["event_id"], "_team_note_{$_POST["date_id"]}", $_POST["note"]);
-    }
+    //if (isset($_POST["team_note"])) {
+    //    db_update_field($_POST["event_id"], "_team_note_{$_POST["date_id"]}", $_POST["note"]);
+    //}
+
 
     if (array_key_exists("team_checkin", get_config()[$form_key]["controlls"])) {
         $max_members = get_config()[$form_key]["controlls"]["team_checkin"]["max_members"];
@@ -214,10 +215,25 @@ function my_admin_page($form_key)
                 if (isset($_POST["un_add_{$i}"])) {
                     try {
                         db_remove_field($_POST["event_id"], $key);
+                        $user_note_key = "_team_note{$i}_{$_POST["date_id"]}";
+                        db_remove_field($_POST["event_id"], $user_note_key);
                     } catch (Exception $e) {
                     }
                     break;
                 }
+            }
+        }
+    }
+
+    // check team note
+    if (isset($_POST["date_id"])) {
+        for ($i = 1; $i <= $max_members; $i++) {
+            $user_note_key = "_team_note{$i}_{$_POST["date_id"]}";
+            //echo $user_note_key;
+            //echo "<br>";
+            if (isset($_POST[$user_note_key])) {
+                echo "set!!!!!!";
+                db_update_field($_POST["event_id"], $user_note_key, $_POST["note"]);
             }
         }
     }
