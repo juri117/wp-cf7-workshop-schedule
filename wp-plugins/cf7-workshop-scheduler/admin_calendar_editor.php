@@ -105,7 +105,7 @@ function getEventDataHtml($events, $event_id, $date_id, $calendar_list, $config_
         }
     }
 
-    $out .= "<tr class=\"tr-new-sub-section\"><td>Team-Notizen</dt><td>";
+    $out .= "<tr class=\"tr-new-sub-section\"><td>Notiz ans Team</dt><td>";
     $team_note_key = "_team_note_{$date_id}";
     $team_note_txt = "";
     if (property_exists($data, $team_note_key)) {
@@ -202,7 +202,7 @@ function getEventDataHtml($events, $event_id, $date_id, $calendar_list, $config_
         }
 
         if (isset($config_form["controlls"]["public_note"])) {
-            $out .= "<tr class=\"tr-new-sub-section\"><td>Info für ALLE</dt><td>";
+            $out .= "<tr class=\"tr-new-sub-section\"><td>Info für ALLE sichtbar</dt><td>";
             $pub_note_key = "_public_note_{$date_id}";
             $pub_note_txt = "";
             if (property_exists($data, $pub_note_key)) {
@@ -213,7 +213,7 @@ function getEventDataHtml($events, $event_id, $date_id, $calendar_list, $config_
         }
 
         if (isset($config_form["controlls"]["private_note"])) {
-            $out .= "<tr class=\"tr-new-sub-section\"><td>Admin-Notizen</dt><td>";
+            $out .= "<tr class=\"tr-new-sub-section\"><td>private Notiz<br><small>(nur für Admins sichtbar)</small></dt><td>";
             $priv_note_key = "_private_note_{$date_id}";
             $priv_note_txt = "";
             if (property_exists($data, $priv_note_key)) {

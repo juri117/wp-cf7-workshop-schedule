@@ -337,23 +337,17 @@ function my_admin_page($form_key)
     </div>
 
     <script type="text/javascript">
-        //var events = {
-        //    <?php echo $data_json; ?>
-        //};
-        //var field_name_patches = <?php echo json_encode($field_name_patches); ?>;
-        //var admin_field_name_patches = <?php echo json_encode($admin_field_name_patches); ?>;
-        //var controlls = <?php echo json_encode($controlls); ?>;
 
         var calendar_json = [
             <?php echo $calendar_json; ?>
         ];
-        //var is_admin = <?php echo has_admin_priv(); ?>;
-        //var my_name = "<?php echo $user_name; ?>";
 
         var opts = {
             abbrDay: true,
             firstDay: 1,
             abbrYear: false,
+            year: <?php echo $year; ?>,
+            month: <?php echo $month; ?>,
             //onDayClick: updateDay,
             onDayClick: function onDay(day, events) {
                 //alert("?page=sample-page&year=" + day.getFullYear() + "&month=" + (day.getMonth() + 1));
@@ -362,7 +356,7 @@ function my_admin_page($form_key)
             onMonthChanged: function onMonthChanged(month, year) {
                 window.location.href = "?page=<?php echo $page_slug ?>&year=" + year + "&month=" + month;
             },
-            onEventClick: function onEvent(event) {
+            onEventClick: function onEvent(event, month, year) {
                 //updateEvent(event.id, event.dateId);
                 window.location.href = "?page=<?php echo $page_slug ?>&event_id=" + event.id + "&date_id=" + event.dateId;
             },
@@ -370,17 +364,6 @@ function my_admin_page($form_key)
         };
         var ele = document.getElementById('calendar');
         var cal = new calendar(ele, opts);
-    </script>
-
-
-    <script type="text/javascript">
-        <?php
-        if (isset($_POST["event_id"]) && isset($_POST["date_id"])) {
-            echo 'cal.loadDate(new Date(events[<?php echo $_POST["event_id"]; ?>]["date" + <?php echo $_POST["date_id"]; ?>]))';
-        } else {
-            echo "cal.loadMonth(" . (int)$year . ", " . (int)$month - 1 . ")";
-        }
-        ?>
     </script>
 
 

@@ -1,17 +1,18 @@
 <?php
 
-defined( 'ABSPATH' ) || exit;
+defined('ABSPATH') || exit;
 
 require_once(dirname(__FILE__) . '/config.php');
 
 /**
  * Adding WP List table class if it's not available.
  */
-if ( ! class_exists( \WP_List_Table::class ) ) {
+if (! class_exists(\WP_List_Table::class)) {
 	require_once ABSPATH . 'wp-admin/includes/class-wp-list-table.php';
 }
 
-class Drafts_List_Table extends \WP_List_Table {
+class Drafts_List_Table extends \WP_List_Table
+{
 
 	/**
 	 * Const to declare number of posts to show per page in the table.
@@ -24,7 +25,8 @@ class Drafts_List_Table extends \WP_List_Table {
 	/**
 	 * Draft_List_Table constructor.
 	 */
-	public function __construct(string $form_key, string $year) {
+	public function __construct(string $form_key, string $year)
+	{
 
 		parent::__construct(
 			array(
@@ -33,17 +35,17 @@ class Drafts_List_Table extends \WP_List_Table {
 				'ajax'     => false,
 			)
 		);
-		
+
 		$this->form_key = $form_key;
 		$this->year = $year;
-
 	}
 
 	/**
 	 * Display text for when there are no items.
 	 */
-	public function no_items() {
-		esc_html_e( 'Keine Einträge gefunden.', 'admin-table-tut' );
+	public function no_items()
+	{
+		esc_html_e('Keine Einträge gefunden.', 'admin-table-tut');
 	}
 
 	/**
@@ -53,22 +55,23 @@ class Drafts_List_Table extends \WP_List_Table {
 	 * @param  string $column_name The column we're currently in.
 	 * @return string              The Content to display
 	 */
-	public function column_default( $item, $column_name ) {
+	public function column_default($item, $column_name)
+	{
 		$result = '';
-		switch ( $column_name ) {
+		switch ($column_name) {
 			case 'date':
-				$t_time    = get_the_time( 'Y/m/d g:i:s a', $item['id'] );
-				$time      = get_post_timestamp( $item['id'] );
+				$t_time    = get_the_time('Y/m/d g:i:s a', $item['id']);
+				$time      = get_post_timestamp($item['id']);
 				$time_diff = time() - $time;
 
-				if ( $time && $time_diff > 0 && $time_diff < DAY_IN_SECONDS ) {
+				if ($time && $time_diff > 0 && $time_diff < DAY_IN_SECONDS) {
 					/* translators: %s: Human-readable time difference. */
-					$h_time = sprintf( __( '%s ago', 'admin-table-tut' ), human_time_diff( $time ) );
+					$h_time = sprintf(__('%s ago', 'admin-table-tut'), human_time_diff($time));
 				} else {
-					$h_time = get_the_time( 'Y/m/d', $item['id'] );
+					$h_time = get_the_time('Y/m/d', $item['id']);
 				}
 
-				$result = '<span title="' . $t_time . '">' . apply_filters( 'post_date_column_time', $h_time, $item['id'], 'date', 'list' ) . '</span>';
+				$result = '<span title="' . $t_time . '">' . apply_filters('post_date_column_time', $h_time, $item['id'], 'date', 'list') . '</span>';
 				break;
 
 			case 'author':
@@ -92,13 +95,14 @@ class Drafts_List_Table extends \WP_List_Table {
 	 *
 	 * @return void
 	 */
-	public function prepare_items() {
+	public function prepare_items()
+	{
 		$form_id = get_config()[$this->form_key]["form_id"];
 		$columns_config = get_config()[$this->form_key]["admin_list_columns"];
 
 		$columns = array();
 		foreach ($columns_config as $key => $value) {
-			$columns[$value] = __( $key, 'admin-table-tut' );
+			$columns[$value] = __($key, 'admin-table-tut');
 		}
 		$sortable = array(
 			#'title'  => array( 'title', true ),
@@ -108,7 +112,7 @@ class Drafts_List_Table extends \WP_List_Table {
 		);
 		$hidden                = array();
 		$primary               = 'name_einrichtung';
-		$this->_column_headers = array( $columns, $hidden, $sortable, $primary);
+		$this->_column_headers = array($columns, $hidden, $sortable, $primary);
 
 
 
@@ -116,16 +120,16 @@ class Drafts_List_Table extends \WP_List_Table {
 		$sql = "SELECT data_id, JSON_OBJECTAGG(name, value) AS data FROM " . $wpdb->prefix . "cf7_vdata_entry WHERE cf7_id = " . $form_id . " GROUP BY data_id;";
 		$posts = $wpdb->get_results($sql);
 		$data = array();
-		
+
 		foreach ($posts as $post) {
 			$json = json_decode($post->data, false);
 			for ($i = 1; $i <= 4; $i++) {
 				$date_str = $json->{"date" . $i};
 				$time_str = $json->{"time" . $i};
 				# if($date_str != ""){
-				if (str_starts_with($date_str,$this->year)){
+				if (str_starts_with($date_str, $this->year)) {
 					if (property_exists($json, "_date_confirm_" . $i)) {
-						if ($json->{"_date_confirm_" . $i} == "1"){
+						if ($json->{"_date_confirm_" . $i} == "1") {
 							$team = array();
 							for ($i_team = 1; $i_team <= 10; $i_team++) {
 								$key = "_team" . $i_team . "_" . $i;
@@ -133,11 +137,13 @@ class Drafts_List_Table extends \WP_List_Table {
 									$team[] = $json->{$key};
 								}
 							}
-							$row = ["_no"=>0,
-									"_date"=>$date_str." ".$time_str,
-									"_team" => implode(", ", $team)];
+							$row = [
+								"_no" => 0,
+								"_date" => $date_str . " " . $time_str,
+								"_team" => implode(", ", $team)
+							];
 							foreach ($columns_config as $key => $value) {
-								if($value[0] != "_"){
+								if ($value[0] != "_") {
 									$row[$value] = $json->{$value};
 								}
 							}
@@ -149,7 +155,7 @@ class Drafts_List_Table extends \WP_List_Table {
 		}
 
 		usort($data, 'date_sort');
-		for($i = 0; $i < sizeof($data); $i++){
+		for ($i = 0; $i < sizeof($data); $i++) {
 			$data[$i]["_no"] = $i + 1;
 		}
 
@@ -163,7 +169,6 @@ class Drafts_List_Table extends \WP_List_Table {
 		#	)
 		#);
 	}
-
 }
 
 
@@ -171,32 +176,35 @@ class Drafts_List_Table extends \WP_List_Table {
 /**
  * This function is responsible for render the drafts table
  */
-function bootload_drafts_table($form_key) : void {
-	
+function bootload_drafts_table($form_key): void
+{
+
 	$year = date("Y");
-	if (isset($_POST['year'])) {
-		if($_POST['year'] != ""){
-			$year = $_POST['year'];
+	if (isset($_GET['year'])) {
+		if ($_GET['year'] != "") {
+			$year = $_GET['year'];
 		}
 	}
 
 	$drafts_table = new Drafts_List_Table($form_key, $year);
-	?>
+?>
 	<div class="wrap">
-		<h2><?php esc_html_e( 'Liste', 'admin-table-tut' ); ?></h2>
-		<form id="year-selection" method="post">
+		<h2><?php esc_html_e('Liste', 'admin-table-tut'); ?></h2>
+		<form id="year-selection" method="get">
+			<input type='hidden' name='page' value='<?php echo $_GET['page']; ?>' />
 			<select name="year" id="year" onchange="this.form.submit()">
-			<?php
+				<?php
 				$current = date("Y");
-				for($i = 0; $i < 4; $i++){
+				for ($i = 0; $i < 4; $i++) {
 					$y = $current - $i;
 					$selected = "";
-					if($year == $current - $i){
+					if ($year == $current - $i) {
 						$selected = " selected";
 					}
-					echo "<option value=\"".$y."\"".$selected.">".$y."</option>";
+
+					echo "<option value=\"" . $y . "\"" . $selected . ">" . $y . "</option>";
 				}
-			?>
+				?>
 			</select>
 		</form>
 		<form id="schedule-list-page" method="get">
@@ -209,9 +217,10 @@ function bootload_drafts_table($form_key) : void {
 			?>
 		</form>
 	</div>
-	<?php
+<?php
 }
 
-function date_sort($object1, $object2) {
-    return $object1["_date"] > $object2["_date"];
+function date_sort($object1, $object2)
+{
+	return $object1["_date"] > $object2["_date"];
 }
