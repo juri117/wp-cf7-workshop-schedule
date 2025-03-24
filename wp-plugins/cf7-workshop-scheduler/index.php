@@ -1,13 +1,13 @@
 <?php
 
-const VERSION = "0.11";
+const VERSION = "1.00";
 
 /*
 Plugin Name: CF7 workshop scheduler
 Plugin URI: https://github.com/juri117/wp-workshop-schedule
 Description: Erweiterung für contact-form-7 und advanced-cf7-db zum planen von workshops, zeigt einen Kalender für Angemeldete user an
 Requires Plugins: contact-form-7, advanced-cf7-db
-Version: 0.11
+Version: 1.00
 Author: Juri Bieler
 Author URI: https://github.com/juri117
 */
@@ -143,7 +143,7 @@ function my_plugin_admin_scripts()
 	wp_enqueue_style('my-calendar', plugins_url('cf7-workshop-scheduler/calendar/calendar.css'), array(), VERSION);
 	wp_enqueue_style('my-calendar-colors', plugins_url('cf7-workshop-scheduler/calendar/calendar_colors.css'), array(), VERSION);
 	wp_enqueue_script('my-calendar', plugins_url('cf7-workshop-scheduler/calendar/calendar.js'), array(), VERSION);
-	wp_enqueue_script('my-workshop-skripts', plugins_url('cf7-workshop-scheduler/plugin.js'), array(), VERSION);
+	//wp_enqueue_script('my-workshop-skripts', plugins_url('cf7-workshop-scheduler/plugin.js'), array(), VERSION);
 }
 
 function my_plugin_admin_styles()

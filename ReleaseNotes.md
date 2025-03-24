@@ -1,4 +1,10 @@
 
+# 1.00
+
+**new-features**
+* refactor edit view to use php only (no js)
+* add note per team member (no longer support editing or adding team_note)
+
 # 0.11
 
 **new-features**
