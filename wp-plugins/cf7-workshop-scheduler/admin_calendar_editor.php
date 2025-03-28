@@ -84,7 +84,7 @@ function getEventDataHtml($events, $event_id, $date_id, $calendar_list, $config_
             $key = "_team{$i}_{$date_id}";
             if (property_exists($data, $key) && $data->$key != "") {
                 $out .= "<tr><td>{$i}.</dt><td>";
-                $out .= "<div class='card' style='max-width: 100% !important; background-color:rgb(216, 236, 248);'>";
+                $out .= "<div class='card' style='max-width: 100% !important; background-color:rgb(216, 236, 248); margin-top: 10px; margin-bottom: 10px;'>";
                 $out .= "<h2 class='title'>{$data->$key}</h2>";
 
                 $out .= "<div class='infobox'>";
@@ -109,7 +109,7 @@ function getEventDataHtml($events, $event_id, $date_id, $calendar_list, $config_
                 // note: display/editor
                 $user_not = "";
                 $user_note_key = "_team_note{$i}_{$date_id}";
-                if (property_exists($data, $key)) {
+                if (property_exists($data, $user_note_key)) {
                     $user_not = $data->$user_note_key;
                 }
                 if($data->$key == $user->user_login) {

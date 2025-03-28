@@ -345,7 +345,7 @@ function my_admin_page($form_key)
             } else if (isset($_GET["day"])) {
                 echo updateDay($events_map, $calendar_list, "{$year}-{$month}-{$_GET["day"]}", $page_slug);
             } else {
-                echo "sollte hier beim Klicken im Kalender nichts erscheinen bitte einmal strg+shift+R drücken (das lädt all Skripte neu).";
+                //echo "sollte hier beim Klicken im Kalender nichts erscheinen bitte einmal strg+shift+R drücken (das lädt all Skripte neu).";
             }
             ?>
         </div>
