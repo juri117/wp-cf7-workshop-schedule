@@ -189,7 +189,7 @@ function my_admin_list_page_main()
 {
 	foreach (get_config() as $key => $value) {
 		if ($value["title"] . " Liste" == get_admin_page_title()) {
-			bootload_drafts_table($key);
+			bootload_workshop_table($key);
 			return;
 		}
 	}
