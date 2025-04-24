@@ -46,15 +46,57 @@ function getEventDataHtml($events, $event_id, $date_id, $calendar_list, $config_
         $header_cls = "cls-disabled";
     }
 
-    $out = "<div class=\"info-box\">";
-    $out .= "<table class=\"table-info\">";
+    $out = "<div class=\"info-box card\">";
+    $out .= "<h2>{$data->name_einrichtung}</h2>";
+    //$out .= "<hr style='border: solid 1px gray;'>";
+    $out .= "<br>";
 
-    $date_key = "date{$date_id}";
-    $time_key = "time{$date_id}";
-    $out .= "<tr class=\"{$header_cls}\"><th><strong>" . get_date_str($data->$date_key) . "</strong> um <strong>{$data->$time_key}</strong></th><th>{$data->name_einrichtung}</th></tr>";
+    // show date options:
+
+    $out .= "<table class=\"table-info\">";
+    $out .= "<tr class=\"tr-new-section\"><td colspan=\"2\"><strong>Terminoptionen für dieses Event</strong></dt></tr>";
+    $out .= "<tr> <td colspan=\"2\">";
+    
+    $counter = 1;
+    $out .= "<table class=\"table-info\" style=\"border-spacing: 0px 2px !important; border-collapse: separate;\">";
+    //$out .= "<tr class=\"tr-new-section\"><td colspan=\"3\"><strong>Terminoptionen für dieses Event</strong></td></tr>";
+    foreach ($calendar_list as $event) {
+        if ($event["id"] == $event_id) {
+            $time_key = "time{$event["dateId"]}";
+            $out .= "<tr style=\"cursor: pointer;\" class=\"{$event["type"]}\" onclick=\"window.location='?page={$page_slug}&event_id={$event["id"]}&date_id={$event["dateId"]}';\">";
+            //updateEvent(" . $event["id"] . ", " . $event["dateId"] . ");cal.loadDate(new Date('" . $event["startDate"] . "'));window.scrollTo(0,0)\">";
+            if ($event["dateId"] == $date_id) {
+                $out .= "<td><b>{$counter}</b></td><td><b>ausgewählt ↓</b></td><td><b>" . get_date_str($event["startDate"]) . " um {$events[$event["id"]]->$time_key}<b></td>";
+            } else {
+                $out .= "<td>{$counter}</td><td></td><td>" . get_date_str($event["startDate"]) . " um {$events[$event["id"]]->$time_key}</td>";
+            }
+            $out .= "</tr>";
+            $counter++;
+        }
+    }
+    $out .= "</table>";
+    //$out .= "<br>";
+    $out .= "</td></tr>";
+
+
+
+    
+    $out .= "<tr class=\"tr-new-section\"><td colspan=\"2\"><strong>Infos zum Event</strong></dt></tr>";
+
+    //$date_key = "date{$date_id}";
+    //$time_key = "time{$date_id}";
+    //$out .= "<tr class=\"{$header_cls}\"><th><strong>" . get_date_str($data->$date_key) . "</strong> um <strong>{$data->$time_key}</strong></th><th>{$data->name_einrichtung}</th></tr>";
 
     //echo var_dump($config_form);
     $out .= display_fields($data, $config_form["field_name_patches"]);
+
+    // Other fields
+    if (has_admin_priv()) {
+        $out .= "<tr class=\"tr-new-section\"><td colspan=\"2\"><strong>Infos zum Event (nur für Admins)</strong></dt></tr>";
+        $out .= display_fields($data, $config_form["admin_field_name_patches"]);
+    }
+
+    $out .= "<tr class=\"tr-new-section\"><td colspan=\"2\"><strong>Event planen</strong></dt></tr>";
 
     $i_am_team = false;
     if (isset($config_form["controlls"]["team_checkin"])) {
@@ -83,9 +125,10 @@ function getEventDataHtml($events, $event_id, $date_id, $calendar_list, $config_
         for ($i = 1; $i <= 10; $i++) {
             $key = "_team{$i}_{$date_id}";
             if (property_exists($data, $key) && $data->$key != "") {
-                $out .= "<tr><td>{$i}.</dt><td>";
+                //$out .= "<tr><td>{$i}.</dt>";
+                $out .= "<td colspan=\"2\">";
                 $out .= "<div class='card' style='max-width: 100% !important; background-color:rgb(216, 236, 248); margin-top: 10px; margin-bottom: 10px;'>";
-                $out .= "<h2 class='title'>{$data->$key}</h2>";
+                $out .= "<h2 class='title'>{$i}. {$data->$key}</h2>";
 
                 $out .= "<div class='infobox'>";
                 if (isset($config_form["controlls"]["team_checkin"]["check_field"]) && has_admin_priv() && isConfirmed($data, $date_id)) {
@@ -145,6 +188,36 @@ function getEventDataHtml($events, $event_id, $date_id, $calendar_list, $config_
         //}
         $out .= "</td></tr>";
     }
+
+    // show note from admin for all
+    if (has_admin_priv()) {
+        if (isset($config_form["controlls"]["public_note"])) {
+            $out .= "<tr class=\"tr-new-sub-section\"><td>Nachricht/Notiz vom Admin an ALLE</dt><td>";
+            $pub_note_key = "_public_note_{$date_id}";
+            $pub_note_txt = "";
+            if (property_exists($data, $pub_note_key)) {
+                $pub_note_txt = $data->$pub_note_key;
+            }
+            $out .= add_text_area($event_id, $date_id, "public_note", $pub_note_txt);
+            $out .= "</td></tr>";
+        }
+    }    else {
+        if (isset($config_form["controlls"]["public_note"])) {
+            $pub_note_key = "_public_note_{$date_id}";
+            if (property_exists($data, $pub_note_key)) {
+                if($data->$pub_note_key != "") {
+                    $out .= "<tr class=\"tr-new-sub-section\"><td colspan=\"2\">"; //Nachricht/Notiz an alle</dt><td>";
+                    $out .= "<div class='card' style='max-width: 100% !important; background-color:rgb(216, 236, 248); margin-top: 10px; margin-bottom: 10px;'>";
+                    $out .= "<h2>Nachricht/Notiz an alle</h2>";
+
+                    $out .= "<span style=\"white-space: pre-line\">{$data->$pub_note_key}</span>";
+                    $out .= "</div>";
+                    $out .= "</td></tr>";
+                }
+            }
+        }
+    }
+
 
     // Admin area
     if (has_admin_priv()) {
@@ -228,16 +301,7 @@ function getEventDataHtml($events, $event_id, $date_id, $calendar_list, $config_
             $out .= "</td></tr>";
         }
 
-        if (isset($config_form["controlls"]["public_note"])) {
-            $out .= "<tr class=\"tr-new-sub-section\"><td>Info für ALLE sichtbar</dt><td>";
-            $pub_note_key = "_public_note_{$date_id}";
-            $pub_note_txt = "";
-            if (property_exists($data, $pub_note_key)) {
-                $pub_note_txt = $data->$pub_note_key;
-            }
-            $out .= add_text_area($event_id, $date_id, "public_note", $pub_note_txt);
-            $out .= "</td></tr>";
-        }
+        
 
         if (isset($config_form["controlls"]["private_note"])) {
             $out .= "<tr class=\"tr-new-sub-section\"><td>private Notiz<br><small>(nur für Admins sichtbar)</small></dt><td>";
@@ -249,7 +313,10 @@ function getEventDataHtml($events, $event_id, $date_id, $calendar_list, $config_
             $out .= add_text_area($event_id, $date_id, "private_note", $priv_note_txt);
             $out .= "</td></tr>";
         }
-    } else {
+    } 
+
+    /*
+    else {
         if (isset($config_form["controlls"]["public_note"])) {
             $pub_note_key = "_public_note_{$date_id}";
             if (property_exists($data, $pub_note_key)) {
@@ -257,14 +324,12 @@ function getEventDataHtml($events, $event_id, $date_id, $calendar_list, $config_
             }
         }
     }
+    */
 
-    // Other fields
-    if (has_admin_priv()) {
-        $out .= "<tr class=\"tr-new-section\"><td colspan=\"2\"><strong>Sonstiges</strong></dt></tr>";
-        $out .= display_fields($data, $config_form["admin_field_name_patches"]);
-    }
+
 
     // Link other dates for this event
+    /*
     $out .= "<tr class=\"tr-new-section\"><td colspan=\"2\"><strong>alle Terminoptionen für dieses Event</strong></dt></tr>";
     $counter = 1;
     $out .= "<table style=\"width:100%; border-spacing: 0px 2px;\">";
@@ -283,6 +348,7 @@ function getEventDataHtml($events, $event_id, $date_id, $calendar_list, $config_
         }
     }
     $out .= "</table>";
+    */
 
     $out .= "</table></div>";
     return $out;

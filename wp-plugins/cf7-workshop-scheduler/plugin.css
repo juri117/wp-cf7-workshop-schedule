@@ -62,7 +62,7 @@
 }
 
 .info-box {
-    border: 0pt solid rgb(202, 202, 202);
+    border: 1pt solid rgb(202, 202, 202);
     /*border-radius: 5px;*/
 }
 
@@ -82,9 +82,15 @@
 }
 
 .tr-new-section {
-    border-top: 2pt solid rgb(201, 201, 201);
+    border-top: 1em solid rgb(255, 255, 255);
+    border-bottom: 3px solid rgb(201, 201, 201);
     background-color: rgb(226, 226, 226);
     vertical-align: top;
+}
+
+tr.tr-new-section>td {
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
 }
 
 .tr-new-section>td>strong {
