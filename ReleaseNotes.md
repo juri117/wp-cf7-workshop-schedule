@@ -1,4 +1,9 @@
 
+# 1.03
+
+**new-features**
+* fix type in settings -> disable_if_cancelled
+
 # 1.02
 
 **new-features**

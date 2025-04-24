@@ -15,11 +15,11 @@
             "check_fields": {
                 "_check_client": {
                     "text": "client confirmed",
-                    "disable_if_cancled": true
+                    "disable_if_cancelled": true
                 },
                 "_check_team": {
                     "text": "team confirmed",
-                    "disable_if_cancled": true
+                    "disable_if_cancelled": true
                 }
             },
             "invoice": {},

@@ -247,9 +247,9 @@ function getEventDataHtml($events, $event_id, $date_id, $calendar_list, $config_
                 $check_key = "{$key}_{$date_id}";
                 if (property_exists($data, $check_key)) {
                     $out .= "<span style=\"color:green;\">am " . get_date_str($data->$check_key) . " </span>";
-                    $out .= add_form_button($event_id, $date_id, "un{$key}", "un-check", (!isRejected($data, $date_id) || !$field["disable_if_cancled"]));
+                    $out .= add_form_button($event_id, $date_id, "un{$key}", "un-check", (!isRejected($data, $date_id) || !$field["disable_if_cancelled"]));
                 } else {
-                    $out .= add_form_button($event_id, $date_id, $key, "check", (!isRejected($data, $date_id) || !$field["disable_if_cancled"]));
+                    $out .= add_form_button($event_id, $date_id, $key, "check", (!isRejected($data, $date_id) || !$field["disable_if_cancelled"]));
                 }
                 $out .= "</td></tr>";
             }
