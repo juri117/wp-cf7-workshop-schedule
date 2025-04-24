@@ -1,5 +1,8 @@
 
-# 1.01 ...
+# 1.01
+
+**new-features**
+* rearrange and redesign calendar sidebar
 
 # 1.00
 
