@@ -129,24 +129,24 @@ function my_admin_page($form_key)
     $config_form = get_config()[$form_key];
     $form_title = get_config()[$form_key]["title"];
     $form_id = get_config()[$form_key]["form_id"];
-    $secret_fields = get_config()[$form_key]["secret_fields"];
+    #$secret_fields = get_config()[$form_key]["secret_fields"];
     $check_fields = [];
-    if (array_key_exists("check_fields", get_config()[$form_key]["controlls"])) {
-        $check_fields = get_config()[$form_key]["controlls"]["check_fields"];
+    if (array_key_exists("check_fields", get_config()[$form_key]["controls"])) {
+        $check_fields = get_config()[$form_key]["controls"]["check_fields"];
     }
     # $special_check_fields = get_config()[$form_key]["special_check_fields"];
     $field_name_patches = get_config()[$form_key]["field_name_patches"];
     $admin_field_name_patches = get_config()[$form_key]["admin_field_name_patches"];
-    $controlls = get_config()[$form_key]["controlls"];
+    $controls = get_config()[$form_key]["controls"];
 
     $special_check_fields = [];
-    if (array_key_exists("team_checkin", get_config()[$form_key]["controlls"])) {
-        for ($i = 1; $i <= get_config()[$form_key]["controlls"]["team_checkin"]["max_members"]; $i++) {
+    if (array_key_exists("team_checkin", get_config()[$form_key]["controls"])) {
+        for ($i = 1; $i <= get_config()[$form_key]["controls"]["team_checkin"]["max_members"]; $i++) {
             $special_check_fields[] = "_check_team{$i}";
         }
     }
 
-    $secret_fields = array_merge($secret_fields, array_keys($check_fields), $special_check_fields);
+    #$secret_fields = array_merge($secret_fields, array_keys($check_fields), $special_check_fields);
 
     if (has_admin_priv()) {
         if (isset($_POST["confirm_date"])) {
@@ -201,8 +201,8 @@ function my_admin_page($form_key)
     //}
 
 
-    if (array_key_exists("team_checkin", get_config()[$form_key]["controlls"])) {
-        $max_members = get_config()[$form_key]["controlls"]["team_checkin"]["max_members"];
+    if (array_key_exists("team_checkin", get_config()[$form_key]["controls"])) {
+        $max_members = get_config()[$form_key]["controls"]["team_checkin"]["max_members"];
         if (isset($_POST["add_me"])) {
             db_sign_up_user_for_date($_POST["event_id"], $_POST["date_id"], $user_name, $max_members);
         }

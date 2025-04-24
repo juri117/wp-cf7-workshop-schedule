@@ -4,13 +4,7 @@
         "form_id": 1234,
         "calendar_cap": "read",
         "list_cap": "administrator",
-        "secret_fields": [
-            "tel",
-            "email",
-            "confirmation_privacy",
-            "submit_ip"
-        ],
-        "controlls": {
+        "controls": {
             "team_checkin": {
                 "max_members": 10,
                 "check_field": {

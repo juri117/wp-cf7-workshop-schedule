@@ -1,4 +1,10 @@
 
+# 1.02
+
+**new-features**
+* remove deprecated setting secret_fields
+* fix typo in settings -> controls
+
 # 1.01
 
 **new-features**
