@@ -100,3 +100,15 @@ tr.tr-new-section>td {
 .cls-input {
     margin: 2px !important;
 }
+
+.cls-input-readonly {
+    display: inline-block;
+    vertical-align: top;
+    white-space: pre-line;
+    background-color:rgb(242, 249, 253);
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid rgb(202, 202, 202);
+    width:95% !important;
+    color: black;
+}

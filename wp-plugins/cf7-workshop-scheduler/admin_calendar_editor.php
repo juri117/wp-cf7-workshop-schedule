@@ -161,9 +161,10 @@ function getEventDataHtml($events, $event_id, $date_id, $calendar_list, $form_ke
                     $out .= add_text_area($event_id, $date_id, $user_note_key, $user_not);
                 } else {
                     // note text
-                    // $out .= "<span style=\"white-space: pre-line\">{$user_not}</span>";
                     if($user_not != ""){
-                        $out .= "<textarea id=\"note\" name=\"note\" rows=\"4\" style=\"width:100%; color:black;\" class=\"cls-input\" disabled>{$user_not}</textarea>";
+                        $out .= "<small>Nachricht/Notiz von {$data->$key}</small><br>";
+                        $out .= "<span class=\"cls-input-readonly\">{$user_not}</span>";
+                        //$out .= "<textarea id=\"note\" name=\"note\" rows=\"4\" style=\"width:100%; color:black;\" class=\"cls-input\" disabled>{$user_not}</textarea>";
                     }
                 }
 
@@ -214,7 +215,8 @@ function getEventDataHtml($events, $event_id, $date_id, $calendar_list, $form_ke
                     $out .= "<h2>Nachricht/Notiz an alle</h2>";
 
                     //$out .= "<span style=\"white-space: pre-line\">{$data->$pub_note_key}</span>";
-                    $out .= "<textarea id=\"note\" name=\"note\" rows=\"4\" style=\"width:100%; color:black;\" class=\"cls-input\" disabled>{$data->$pub_note_key}</textarea>";
+                    //$out .= "<textarea id=\"note\" name=\"note\" rows=\"4\" style=\"width:100%; color:black;\" class=\"cls-input\" disabled>{$data->$pub_note_key}</textarea>";
+                    $out .= "<span class=\"cls-input-readonly\">{$data->$pub_note_key}</span>";
                     $out .= "</div>";
                     $out .= "</td></tr>";
                 }
