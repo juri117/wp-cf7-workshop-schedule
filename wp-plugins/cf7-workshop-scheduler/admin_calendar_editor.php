@@ -162,7 +162,9 @@ function getEventDataHtml($events, $event_id, $date_id, $calendar_list, $form_ke
                 } else {
                     // note text
                     // $out .= "<span style=\"white-space: pre-line\">{$user_not}</span>";
-                    $out .= "<textarea id=\"note\" name=\"note\" rows=\"4\" style=\"width:100%; color:black;\" class=\"cls-input\" disabled>{$user_not}</textarea>";
+                    if($user_not != ""){
+                        $out .= "<textarea id=\"note\" name=\"note\" rows=\"4\" style=\"width:100%; color:black;\" class=\"cls-input\" disabled>{$user_not}</textarea>";
+                    }
                 }
 
                 $out .= "</div>";

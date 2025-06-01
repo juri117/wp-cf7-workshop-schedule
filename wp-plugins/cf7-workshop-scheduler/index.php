@@ -7,7 +7,7 @@ Plugin Name: CF7 workshop scheduler
 Plugin URI: https://github.com/juri117/wp-workshop-schedule
 Description: Erweiterung für contact-form-7 und advanced-cf7-db zum Planen von workshops, zeigt einen Kalender für Angemeldete user an
 Requires Plugins: contact-form-7, advanced-cf7-db
-Version: 1.03
+Version: 1.04
 Author: Juri Bieler
 Author URI: https://github.com/juri117
 */
