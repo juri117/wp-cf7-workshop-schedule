@@ -1,5 +1,8 @@
 <?php
 
+###
+# use time picker for time fields
+
 add_filter('wpcf7_form_elements', 'imp_wpcf7_form_elements');
 function imp_wpcf7_form_elements($content)
 {

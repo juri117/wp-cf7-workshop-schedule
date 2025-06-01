@@ -73,8 +73,8 @@ class Team_List_Table extends \WP_List_Table
 	 */
 	public function prepare_items()
 	{
-		$form_id = get_config()[$this->form_key]["form_id"];
-		#$columns_config = get_config()[$this->form_key]["admin_list_columns"];
+		$form_id = get_config_value($this->form_key, "form_id");
+		#$columns_config = get_config_value($this->form_key, "admin_list_columns");
 
 		$columns = array("name" => __("name", 'admin-table-tut'), "_count" => __("count", 'admin-table-tut'));
 		#foreach ($columns_config as $key => $value) {

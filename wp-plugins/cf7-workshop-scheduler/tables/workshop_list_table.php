@@ -95,8 +95,8 @@ class Workshop_List_Table extends \WP_List_Table
 	 */
 	public function prepare_items()
 	{
-		$form_id = get_config()[$this->form_key]["form_id"];
-		$columns_config = get_config()[$this->form_key]["admin_list_columns"];
+		$form_id = get_config_value($this->form_key, "form_id");
+		$columns_config = get_config_value($this->form_key, "admin_list_columns");
 
 		$columns = array();
 		foreach ($columns_config as $key => $value) {

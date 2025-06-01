@@ -2,14 +2,14 @@
 
 require_once(dirname(__FILE__) . '/admin_calendar_editor.php');
 
-function db_sign_up_user_for_date($event_id, $date_id, $user_name, $max_members)
+function db_sign_up_user_for_date($event_id, $date_id, $user_name, $max_members, $form_key)
 {
     global $wpdb;
     $sql = ("SELECT cf7_id, data_id, JSON_OBJECTAGG(name, value) AS data FROM {$wpdb->prefix}cf7_vdata_entry WHERE data_id={$event_id} GROUP BY data_id;");
     $events = $wpdb->get_results($sql);
     $event = $events[0];
     $json = json_decode($event->data);
-    if (property_exists($json, "_date_confirm_{$date_id}")) {
+    if (property_exists($json, "_date_confirm_{$date_id}") && !get_config_value($form_key, ["controls", "team_checkin", "enlist_after_confirm"], false)) {
         echo ("Anmeldungen für diesen Termin sind nicht mehr möglich.");
         return;
     }
@@ -126,22 +126,22 @@ function my_admin_page($form_key)
         }
     }
 
-    $config_form = get_config()[$form_key];
-    $form_title = get_config()[$form_key]["title"];
-    $form_id = get_config()[$form_key]["form_id"];
+    # $config_form = get_config()[$form_key];
+    $form_title = get_config_value($form_key, "title");
+    $form_id = get_config_value($form_key, "form_id");
     #$secret_fields = get_config()[$form_key]["secret_fields"];
     $check_fields = [];
-    if (array_key_exists("check_fields", get_config()[$form_key]["controls"])) {
-        $check_fields = get_config()[$form_key]["controls"]["check_fields"];
+    if (array_key_exists("check_fields", get_config_value($form_key, "controls"))) {
+        $check_fields = get_config_value($form_key, ["controls", "check_fields"]);
     }
     # $special_check_fields = get_config()[$form_key]["special_check_fields"];
-    $field_name_patches = get_config()[$form_key]["field_name_patches"];
-    $admin_field_name_patches = get_config()[$form_key]["admin_field_name_patches"];
-    $controls = get_config()[$form_key]["controls"];
+    #$field_name_patches = get_config_value($form_key, "field_name_patches");
+    #$admin_field_name_patches = get_config_value($form_key, "admin_field_name_patches");
+    #$controls = get_config_value($form_key, "controls");
 
     $special_check_fields = [];
-    if (array_key_exists("team_checkin", get_config()[$form_key]["controls"])) {
-        for ($i = 1; $i <= get_config()[$form_key]["controls"]["team_checkin"]["max_members"]; $i++) {
+    if (array_key_exists("team_checkin", get_config_value($form_key, "controls"))) {
+        for ($i = 1; $i <= get_config_value($form_key, ["controls", "team_checkin", "max_members"], 0); $i++) {
             $special_check_fields[] = "_check_team{$i}";
         }
     }
@@ -173,7 +173,7 @@ function my_admin_page($form_key)
         }
         if (isset($_POST["date_id"])) {
             foreach (array_merge(array_keys($check_fields), $special_check_fields) as $key) {
-                # echo ("checks...");
+                
                 if (isset($_POST[$key])) {
                     db_update_field($_POST["event_id"], "{$key}_{$_POST["date_id"]}", date("Y-m-d"));
                 }
@@ -201,10 +201,10 @@ function my_admin_page($form_key)
     //}
 
 
-    if (array_key_exists("team_checkin", get_config()[$form_key]["controls"])) {
-        $max_members = get_config()[$form_key]["controls"]["team_checkin"]["max_members"];
+    if (array_key_exists("team_checkin", get_config_value($form_key, "controls"))) {
+        $max_members = get_config_value($form_key, ["controls", "team_checkin", "max_members"], 0);
         if (isset($_POST["add_me"])) {
-            db_sign_up_user_for_date($_POST["event_id"], $_POST["date_id"], $user_name, $max_members);
+            db_sign_up_user_for_date($_POST["event_id"], $_POST["date_id"], $user_name, $max_members, $form_key);
         }
         if (isset($_POST["un_add_me"])) {
             remove_user($_POST["event_id"], $_POST["date_id"], $user_name, $max_members);
@@ -232,7 +232,7 @@ function my_admin_page($form_key)
             //echo $user_note_key;
             //echo "<br>";
             if (isset($_POST[$user_note_key])) {
-                echo "set!!!!!!";
+                # echo "set!!!!!!";
                 db_update_field($_POST["event_id"], $user_note_key, $_POST["note"]);
             }
         }
@@ -341,7 +341,7 @@ function my_admin_page($form_key)
         <div id="note">
             <?php
             if (isset($_GET["event_id"]) && isset($_GET["date_id"])) {
-                echo updateEvent($events_map, $_GET["event_id"], $_GET["date_id"], $calendar_list, $config_form, $page_slug);
+                echo updateEvent($events_map, $_GET["event_id"], $_GET["date_id"], $calendar_list, $form_key, $page_slug);
             } else if (isset($_GET["day"])) {
                 echo updateDay($events_map, $calendar_list, "{$year}-{$month}-{$_GET["day"]}", $page_slug);
             } else {

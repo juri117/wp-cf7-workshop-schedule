@@ -25,6 +25,7 @@ docker compose -f docker-compose.yml up --build
 * install plugins
    * contact-form-7
    * advanced-cf7-db
+   * restrict-date-for-contact-form-7 simple day restriction for date picker (https://wordpress.org/plugins/restrict-date-for-contact-form-7/)
    * wp-database-backup usefull for db backups (https://wordpress.org/plugins/wp-database-backup/)
 
 

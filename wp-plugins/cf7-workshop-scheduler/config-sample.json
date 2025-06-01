@@ -10,7 +10,8 @@
                 "check_field": {
                     "text": "payed"
                 },
-                "admin_can_remove": false
+                "admin_can_remove": false,
+                "enlist_after_confirm": false
             },
             "check_fields": {
                 "_check_client": {
@@ -22,9 +23,9 @@
                     "disable_if_cancelled": true
                 }
             },
-            "invoice": {},
-            "public_note": {},
-            "private_note": {}
+            "invoice": true,
+            "public_note": true,
+            "private_note": true
         },
         "field_name_patches": {
             "Contact": [

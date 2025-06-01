@@ -8,9 +8,9 @@ function datesAreOnSameDay($first, $second)
         $first->format('d') === $second->format('d');
 }
 
-function updateEvent($events, $event_id, $date_id, $calendar_list, $config_form, $page_slug)
+function updateEvent($events, $event_id, $date_id, $calendar_list, $form_key, $page_slug)
 {
-    return getEventDataHtml($events, $event_id, $date_id, $calendar_list, $config_form, $page_slug);
+    return getEventDataHtml($events, $event_id, $date_id, $calendar_list, $form_key, $page_slug);
 }
 
 function isConfirmed($data, $date_id)
@@ -31,7 +31,7 @@ function isRejected($data, $date_id)
     return false;
 }
 
-function getEventDataHtml($events, $event_id, $date_id, $calendar_list, $config_form, $page_slug)
+function getEventDataHtml($events, $event_id, $date_id, $calendar_list, $form_key, $page_slug)
 {
     //global  $field_name_patches, $admin_field_name_patches, $controls, $calendar_json;
 
@@ -88,18 +88,18 @@ function getEventDataHtml($events, $event_id, $date_id, $calendar_list, $config_
     //$out .= "<tr class=\"{$header_cls}\"><th><strong>" . get_date_str($data->$date_key) . "</strong> um <strong>{$data->$time_key}</strong></th><th>{$data->name_einrichtung}</th></tr>";
 
     //echo var_dump($config_form);
-    $out .= display_fields($data, $config_form["field_name_patches"]);
+    $out .= display_fields($data, get_config_value($form_key, "field_name_patches"));
 
     // Other fields
     if (has_admin_priv()) {
         $out .= "<tr class=\"tr-new-section\"><td colspan=\"2\"><strong>Infos zum Event (nur für Admins)</strong></dt></tr>";
-        $out .= display_fields($data, $config_form["admin_field_name_patches"]);
+        $out .= display_fields($data, get_config_value($form_key, "admin_field_name_patches"));
     }
 
     $out .= "<tr class=\"tr-new-section\"><td colspan=\"2\"><strong>Event planen</strong></dt></tr>";
 
     $i_am_team = false;
-    if (isset($config_form["controls"]["team_checkin"])) {
+    if (get_config_value($form_key, ["controls", "team_checkin", "check_field"],false)) {
         $out .= "<tr class=\"tr-new-sub-section\"><td>Workshopleiter_innen</dt><td>";
 
 
@@ -117,7 +117,7 @@ function getEventDataHtml($events, $event_id, $date_id, $calendar_list, $config_
         if ($i_am_team) {
             $out .= add_form_button($event_id, $date_id, "un_add_me", "mich austragen", !property_exists($data, $confirm_key));
         } else {
-            $out .= add_form_button($event_id, $date_id, "add_me", "mich eintragen", !property_exists($data, $confirm_key));
+            $out .= add_form_button($event_id, $date_id, "add_me", "mich eintragen", !property_exists($data, $confirm_key) || get_config_value($form_key, ["controls", "team_checkin", "enlist_after_confirm"], false));
         }
 
         $out .= "</td></tr>";
@@ -131,7 +131,7 @@ function getEventDataHtml($events, $event_id, $date_id, $calendar_list, $config_
                 $out .= "<h2 class='title'>{$i}. {$data->$key}</h2>";
 
                 $out .= "<div class='infobox'>";
-                if (isset($config_form["controls"]["team_checkin"]["check_field"]) && has_admin_priv() && isConfirmed($data, $date_id)) {
+                if (get_config_value($form_key, ["controls", "team_checkin","check_field"], false) && has_admin_priv() && isConfirmed($data, $date_id)) {
                     $check_key = "_check_team{$i}_{$date_id}";
                     if (!property_exists($data, $check_key)) {
                         $out .= " " . add_form_button($event_id, $date_id, "_check_team{$i}", "AWE bezahlt", true);
@@ -141,7 +141,7 @@ function getEventDataHtml($events, $event_id, $date_id, $calendar_list, $config_
                     }
                 }
 
-                if ($config_form["controls"]["team_checkin"]["admin_can_remove"] && has_admin_priv()) {
+                if (get_config_value($form_key, ["controls", "team_checkin", "admin_can_remove"], false) && has_admin_priv()) {
                     $out .= " " . add_form_button($event_id, $date_id, "un_add_{$i}", "austragen", true);
                 }
                 $out .= "</div>";
@@ -161,7 +161,8 @@ function getEventDataHtml($events, $event_id, $date_id, $calendar_list, $config_
                     $out .= add_text_area($event_id, $date_id, $user_note_key, $user_not);
                 } else {
                     // note text
-                    $out .= "<span style=\"white-space: pre-line\">{$user_not}</span>";
+                    // $out .= "<span style=\"white-space: pre-line\">{$user_not}</span>";
+                    $out .= "<textarea id=\"note\" name=\"note\" rows=\"4\" style=\"width:100%; color:black;\" class=\"cls-input\" disabled>{$user_not}</textarea>";
                 }
 
                 $out .= "</div>";
@@ -191,8 +192,8 @@ function getEventDataHtml($events, $event_id, $date_id, $calendar_list, $config_
 
     // show note from admin for all
     if (has_admin_priv()) {
-        if (isset($config_form["controls"]["public_note"])) {
-            $out .= "<tr class=\"tr-new-sub-section\"><td>Nachricht/Notiz vom Admin an ALLE</dt><td>";
+        if (get_config_value($form_key, ["controls", "public_note"], false)) {
+            $out .= "<tr class=\"tr-new-sub-section\"><td>Nachricht/Notiz<br>vom Admin an ALLE</dt><td>";
             $pub_note_key = "_public_note_{$date_id}";
             $pub_note_txt = "";
             if (property_exists($data, $pub_note_key)) {
@@ -202,7 +203,7 @@ function getEventDataHtml($events, $event_id, $date_id, $calendar_list, $config_
             $out .= "</td></tr>";
         }
     }    else {
-        if (isset($config_form["controls"]["public_note"])) {
+        if (get_config_value($form_key, ["controls", "public_note"], false)) {
             $pub_note_key = "_public_note_{$date_id}";
             if (property_exists($data, $pub_note_key)) {
                 if($data->$pub_note_key != "") {
@@ -210,7 +211,8 @@ function getEventDataHtml($events, $event_id, $date_id, $calendar_list, $config_
                     $out .= "<div class='card' style='max-width: 100% !important; background-color:rgb(216, 236, 248); margin-top: 10px; margin-bottom: 10px;'>";
                     $out .= "<h2>Nachricht/Notiz an alle</h2>";
 
-                    $out .= "<span style=\"white-space: pre-line\">{$data->$pub_note_key}</span>";
+                    //$out .= "<span style=\"white-space: pre-line\">{$data->$pub_note_key}</span>";
+                    $out .= "<textarea id=\"note\" name=\"note\" rows=\"4\" style=\"width:100%; color:black;\" class=\"cls-input\" disabled>{$data->$pub_note_key}</textarea>";
                     $out .= "</div>";
                     $out .= "</td></tr>";
                 }
@@ -240,9 +242,9 @@ function getEventDataHtml($events, $event_id, $date_id, $calendar_list, $config_
         $out .= "</td></tr>";
 
         // Check fields
-        if (isset($config_form["controls"]["check_fields"])) {
+        if (get_config_value($form_key, ["controls", "check_fields"], false)) {
             $out .= "<tr class=\"tr-new-sub-sub-section\"><td><strong>Checkliste</strong></dt><td></td></tr>";
-            foreach ($config_form["controls"]["check_fields"] as $key => $field) {
+            foreach (get_config_value($form_key, ["controls", "check_fields"], false) as $key => $field) {
                 $out .= "<tr><td>{$field["text"]}</dt><td>";
                 $check_key = "{$key}_{$date_id}";
                 if (property_exists($data, $check_key)) {
@@ -256,7 +258,7 @@ function getEventDataHtml($events, $event_id, $date_id, $calendar_list, $config_
         }
 
         // Invoice
-        if (isset($config_form["controls"]["invoice"])) {
+        if (get_config_value($form_key, ["controls", "invoice"], false)) {
             $price_sel_0 = "";
             $price_sel_75 = "";
             $price_sel_150 = "";
@@ -286,7 +288,7 @@ function getEventDataHtml($events, $event_id, $date_id, $calendar_list, $config_
             $out .= "<input hidden type=\"text\" id=\"event_id\" name=\"event_id\" value=\"{$event_id}\">";
             $out .= "<input hidden type=\"text\" id=\"date_id\" name=\"date_id\" value=\"{$date_id}\">";
             $out .= "<input type=\"radio\" id=\"free\" name=\"price\" value=\"0\"{$price_sel_0}><label for=\"free\">kostenlos</label></br>";
-            $out .= "<input type=\"radio\" id=\"75eu\" name=\"price\" value=\"75\"{$price_sel_75}><label for=\"75eu\">75 €</label></br>";
+            $out .= "<input type=\"radio\" id=\"75eu\" name=\"price\" value=\"75\"{$price_sel_75}><label for=\"75eu\">100 €</label></br>";
             $out .= "<input type=\"radio\" id=\"150eu\" name=\"price\" value=\"150\"{$price_sel_150}><label for=\"150eu\">150 €</label></br>";
             $out .= "<input type=\"radio\" id=\"custom\" name=\"price\" value=\"custom\"{$price_sel_custom}>";
             $out .= "<input type=\"text\" id=\"price_txt\" name=\"price_txt\" value=\"{$price_custom_txt}\" style=\"width:80px;\"> €</br>";
@@ -303,7 +305,7 @@ function getEventDataHtml($events, $event_id, $date_id, $calendar_list, $config_
 
         
 
-        if (isset($config_form["controls"]["private_note"])) {
+        if (get_config_value($form_key, ["controls", "private_note"], false)) {
             $out .= "<tr class=\"tr-new-sub-section\"><td>private Notiz<br><small>(nur für Admins sichtbar)</small></dt><td>";
             $priv_note_key = "_private_note_{$date_id}";
             $priv_note_txt = "";

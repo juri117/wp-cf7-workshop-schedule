@@ -27,3 +27,23 @@ function get_config()
     global $my_config;
     return $my_config;
 }
+
+function get_config_value($form_key, $value_key, $default = null)
+{
+    global $my_config;
+    if (is_array($value_key)) {
+        $current = $my_config[$form_key] ?? null;
+        foreach ($value_key as $key) {
+            if(!is_array($current)) {
+                return $default;
+            }
+            if (!isset($current[$key])) {
+                return $default;
+            }
+            $current = $current[$key];
+        }
+        return $current;
+    }
+    return $my_config[$form_key][$value_key] ?? $default;
+}
+

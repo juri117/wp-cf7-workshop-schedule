@@ -1,4 +1,11 @@
 
+
+# 1.04
+
+* add option to config that allows team members to join after event confirmation
+* redesign config read, to make it more robust (hopefully)
+* give team note a clearer design
+
 # 1.03
 
 **new-features**
