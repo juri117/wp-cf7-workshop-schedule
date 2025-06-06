@@ -99,7 +99,7 @@ function getEventDataHtml($events, $event_id, $date_id, $calendar_list, $form_ke
     $out .= "<tr class=\"tr-new-section\"><td colspan=\"2\"><strong>Event planen</strong></dt></tr>";
 
     $i_am_team = false;
-    if (get_config_value($form_key, ["controls", "team_checkin", "check_field"],false)) {
+    if (get_config_value($form_key, ["controls", "team_checkin"],false)) {
         $out .= "<tr class=\"tr-new-sub-section\"><td>Workshopleiter_innen</dt><td>";
 
 

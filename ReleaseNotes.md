@@ -3,6 +3,7 @@
 
 * add option to use one note for whole team (like before)
 * add option to enable note per team-member
+* fix team check-in not showing
 
 # 1.04
 
