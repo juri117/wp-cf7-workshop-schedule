@@ -114,7 +114,7 @@ function getEventDataHtml($events, $event_id, $date_id, $calendar_list, $form_ke
 
         $confirm_key = "_date_confirm_{$date_id}";
         if ($i_am_team) {
-            $out .= add_form_button($event_id, $date_id, "un_add_me", "mich austragen", !property_exists($data, $confirm_key) || get_config_value($form_key, ["controls", "team_checkin", "withdraw_after_confirm"], false)));
+            $out .= add_form_button($event_id, $date_id, "un_add_me", "mich austragen", !property_exists($data, $confirm_key) || get_config_value($form_key, ["controls", "team_checkin", "withdraw_after_confirm"], false));
         } else {
             $out .= add_form_button($event_id, $date_id, "add_me", "mich eintragen", !property_exists($data, $confirm_key) || get_config_value($form_key, ["controls", "team_checkin", "enlist_after_confirm"], false));
         }

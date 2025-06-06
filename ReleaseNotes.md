@@ -4,6 +4,7 @@
 * add option to use one note for whole team (like before)
 * add option to enable note per team-member
 * fix team check-in not showing
+* add option to allow withdraw after event was confirmed
 
 # 1.04
 
