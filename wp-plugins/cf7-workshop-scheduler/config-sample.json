@@ -24,6 +24,8 @@
                 }
             },
             "invoice": true,
+            "team_note": true,
+            "user_note": true,
             "public_note": true,
             "private_note": true
         },

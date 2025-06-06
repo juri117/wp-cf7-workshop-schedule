@@ -196,9 +196,9 @@ function my_admin_page($form_key)
             db_update_field($_POST["event_id"], "_price_{$_POST["date_id"]}", $price);
         }
     }
-    //if (isset($_POST["team_note"])) {
-    //    db_update_field($_POST["event_id"], "_team_note_{$_POST["date_id"]}", $_POST["note"]);
-    //}
+    if (isset($_POST["team_note"])) {
+        db_update_field($_POST["event_id"], "_team_note_{$_POST["date_id"]}", $_POST["note"]);
+    }
 
 
     if (array_key_exists("team_checkin", get_config_value($form_key, "controls"))) {

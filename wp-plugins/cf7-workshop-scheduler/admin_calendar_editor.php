@@ -150,20 +150,20 @@ function getEventDataHtml($events, $event_id, $date_id, $calendar_list, $form_ke
 
                 $out .= "<div class='inside'>";
                 // note: display/editor
-                $user_not = "";
+                $user_note = "";
                 $user_note_key = "_team_note{$i}_{$date_id}";
                 if (property_exists($data, $user_note_key)) {
-                    $user_not = $data->$user_note_key;
+                    $user_note = $data->$user_note_key;
                 }
                 if($data->$key == $user->user_login) {
                     // note editor
                     $out .= "meine Nachricht/Notiz ans Team</br>";
-                    $out .= add_text_area($event_id, $date_id, $user_note_key, $user_not);
+                    $out .= add_text_area($event_id, $date_id, $user_note_key, $user_note);
                 } else {
                     // note text
-                    if($user_not != ""){
+                    if($user_note != ""){
                         $out .= "<small>Nachricht/Notiz von {$data->$key}</small><br>";
-                        $out .= "<span class=\"cls-input-readonly\">{$user_not}</span>";
+                        $out .= "<span class=\"cls-input-readonly\">{$user_note}</span>";
                         //$out .= "<textarea id=\"note\" name=\"note\" rows=\"4\" style=\"width:100%; color:black;\" class=\"cls-input\" disabled>{$user_not}</textarea>";
                     }
                 }
@@ -174,22 +174,20 @@ function getEventDataHtml($events, $event_id, $date_id, $calendar_list, $form_ke
             }
         }
     }
-
-    // show this for legacy reasons, now we use per team member notes
+    
+    // one note for whole team
     $team_note_key = "_team_note_{$date_id}";
-    if (property_exists($data, $team_note_key)){
-        $out .= "<tr class=\"tr-new-sub-section\"><td>Notiz ans Team</dt><td>";
-        
-        //$team_note_txt = "";
-        //if (property_exists($data, $team_note_key)) {
+    $team_note_txt = "";
+    if (property_exists($data, $team_note_key)) {
         $team_note_txt = $data->$team_note_key;
-        //}
-
-        //if ($i_am_team || has_admin_priv()) {
-        //    $out .= add_text_area($event_id, $date_id, "team_note", $team_note_txt);
-        //} else {
-        $out .= "<span style=\"white-space: pre-line\">{$team_note_txt}</span>";
-        //}
+    }
+    if(get_config_value($form_key, ["controls", "team_note"], false) || $team_note_txt != "") {
+        $out .= "<tr class=\"tr-new-sub-section\"><td>Team Notiz</dt><td>";
+        if ($i_am_team || has_admin_priv()) {
+            $out .= add_text_area($event_id, $date_id, "team_note", $team_note_txt);
+        } else {
+            $out .= "<span style=\"white-space: pre-line\">{$team_note_txt}</span>";
+        }
         $out .= "</td></tr>";
     }
 
