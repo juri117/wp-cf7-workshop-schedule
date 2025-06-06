@@ -150,21 +150,23 @@ function getEventDataHtml($events, $event_id, $date_id, $calendar_list, $form_ke
 
                 $out .= "<div class='inside'>";
                 // note: display/editor
-                $user_note = "";
-                $user_note_key = "_team_note{$i}_{$date_id}";
-                if (property_exists($data, $user_note_key)) {
-                    $user_note = $data->$user_note_key;
-                }
-                if($data->$key == $user->user_login) {
-                    // note editor
-                    $out .= "meine Nachricht/Notiz ans Team</br>";
-                    $out .= add_text_area($event_id, $date_id, $user_note_key, $user_note);
-                } else {
-                    // note text
-                    if($user_note != ""){
-                        $out .= "<small>Nachricht/Notiz von {$data->$key}</small><br>";
-                        $out .= "<span class=\"cls-input-readonly\">{$user_note}</span>";
-                        //$out .= "<textarea id=\"note\" name=\"note\" rows=\"4\" style=\"width:100%; color:black;\" class=\"cls-input\" disabled>{$user_not}</textarea>";
+                if(get_config_value($form_key, ["controls", "user_note"], false)){
+                    $user_note = "";
+                    $user_note_key = "_team_note{$i}_{$date_id}";
+                    if (property_exists($data, $user_note_key)) {
+                        $user_note = $data->$user_note_key;
+                    }
+                    if($data->$key == $user->user_login) {
+                        // note editor
+                        $out .= "meine Nachricht/Notiz ans Team</br>";
+                        $out .= add_text_area($event_id, $date_id, $user_note_key, $user_note);
+                    } else {
+                        // note text
+                        if($user_note != ""){
+                            $out .= "<small>Nachricht/Notiz von {$data->$key}</small><br>";
+                            $out .= "<span class=\"cls-input-readonly\">{$user_note}</span>";
+                            //$out .= "<textarea id=\"note\" name=\"note\" rows=\"4\" style=\"width:100%; color:black;\" class=\"cls-input\" disabled>{$user_not}</textarea>";
+                        }
                     }
                 }
 
