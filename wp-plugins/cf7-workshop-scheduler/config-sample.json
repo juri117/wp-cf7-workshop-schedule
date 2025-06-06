@@ -11,7 +11,8 @@
                     "text": "payed"
                 },
                 "admin_can_remove": false,
-                "enlist_after_confirm": false
+                "enlist_after_confirm": false,
+                "withdraw_after_confirm": false
             },
             "check_fields": {
                 "_check_client": {
